@@ -1,9 +1,9 @@
-import 'package:atlas_do_camarao/util/consts.dart';
+import 'package:atlas_do_camarao/util/custom_widgets.dart';
+import 'package:atlas_do_camarao/util/permissions.dart';
 import 'package:atlas_do_camarao/view/tela_principal/widgets/choose_layers_dialog.dart';
 import 'package:atlas_do_camarao/view/tela_principal/widgets/map.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:geolocator/geolocator.dart';
 
 class TelaPrincipal extends StatefulWidget {
   const TelaPrincipal({super.key});
@@ -13,28 +13,25 @@ class TelaPrincipal extends StatefulWidget {
 }
 
 class _TelaPrincipalState extends State<TelaPrincipal> {
-  List<String> lLayers = [];
-  List<String> lStyles = [];
+  double _currentLat = 0;
+  double _currentLong = 0;
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: _buildAppBar(),
       body: _buildBody(),
     );
   }
 
-
-
   /**
    * Método responsável por construir a AppBar da tela
    */
   AppBar _buildAppBar() {
     return AppBar(
-      title: Text(
-        "Atlas do Camarão",
-        style: TextStyle(color: Colors.white),
-      ),
+      title: CustomWidgets.buildText("Atlas do Camarão", Colors.white,
+          CustomWidgets.textGiant, "Montserrat"),
       backgroundColor: Colors.indigo,
       actions: [_buildAppBarActions()],
     );
@@ -52,10 +49,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
               context: context,
               builder: (BuildContext context) {
                 return ChooseLayersDialog();
-              }).then((value) =>
-              setState(() {
-
-              }));
+              }).then((value) => setState(() {}));
         },
         child: Icon(
           Icons.layers,
