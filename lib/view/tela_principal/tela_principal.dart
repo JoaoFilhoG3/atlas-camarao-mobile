@@ -1,9 +1,7 @@
 import 'package:atlas_do_camarao/util/custom_widgets.dart';
-import 'package:atlas_do_camarao/util/permissions.dart';
 import 'package:atlas_do_camarao/view/tela_principal/widgets/choose_layers_dialog.dart';
 import 'package:atlas_do_camarao/view/tela_principal/widgets/map.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 
 class TelaPrincipal extends StatefulWidget {
   const TelaPrincipal({super.key});
