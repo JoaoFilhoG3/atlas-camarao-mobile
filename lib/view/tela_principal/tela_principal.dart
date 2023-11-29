@@ -1,5 +1,6 @@
 import 'package:atlas_do_camarao/util/custom_widgets.dart';
 import 'package:atlas_do_camarao/view/tela_principal/widgets/choose_layers_dialog.dart';
+import 'package:atlas_do_camarao/view/tela_principal/widgets/filter_dialog.dart';
 import 'package:atlas_do_camarao/view/tela_principal/widgets/map.dart';
 import 'package:flutter/material.dart';
 
@@ -38,23 +39,41 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
   /**
    * Método responsável por construir os actions da AppBar
    */
-  Padding _buildAppBarActions() {
-    return Padding(
-      padding: EdgeInsets.only(right: 20),
-      child: GestureDetector(
-        onTap: () async {
-          await showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return ChooseLayersDialog();
-              }).then((value) => setState(() {}));
-        },
-        child: Icon(
-          Icons.layers,
-          color: Colors.white,
-          size: 26.0,
+  Widget _buildAppBarActions() {
+    return Row(
+      children: [
+        GestureDetector(
+          onTap: () async {
+            await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return FilterDialog();
+                }).then((value) => setState(() {}));
+          },
+          child: Icon(
+            Icons.filter_list,
+            color: Colors.white,
+            size: 26.0,
+          ),
         ),
-      ),
+        Padding(
+          padding: const EdgeInsets.only(left: 20,right: 20),
+          child: GestureDetector(
+            onTap: () async {
+              await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return ChooseLayersDialog();
+                  }).then((value) => setState(() {}));
+            },
+            child: Icon(
+              Icons.layers,
+              color: Colors.white,
+              size: 26.0,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
