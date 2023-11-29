@@ -18,7 +18,8 @@ class CustomWidgets {
   static Widget buildText(
       String text, Color color, double size, String fontFamily,
       {TextAlign textAlign = TextAlign.center,
-      FontWeight fontWeight = FontWeight.normal}) {
+      FontWeight fontWeight = FontWeight.normal,
+      TextOverflow textOverflow = TextOverflow.visible}) {
     return Text(
       text,
       style: TextStyle(
@@ -28,6 +29,7 @@ class CustomWidgets {
         fontWeight: fontWeight,
       ),
       textAlign: textAlign,
+      overflow: textOverflow,
     );
   }
 

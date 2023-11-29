@@ -1,4 +1,5 @@
 import 'package:atlas_do_camarao/api/features_api.dart';
+import 'package:atlas_do_camarao/api/route_api.dart';
 import 'package:atlas_do_camarao/model/feature.dart';
 import 'package:atlas_do_camarao/util/consts.dart';
 import 'package:atlas_do_camarao/util/custom_widgets.dart';
@@ -29,6 +30,50 @@ class _MapaState extends State<Mapa> {
   bool _showPopup = false;
   List<Feature> _lFeatures = [];
 
+  //Vetor de Images para o Popup
+  List<Widget> _lImages = [
+    Image.asset(
+      "assets/images/MarkerBlue.png",
+      width: 15,
+    ),
+    Image.asset(
+      "assets/images/MarkerBrown.png",
+      width: 15,
+    ),
+    Image.asset(
+      "assets/images/MarkerCyan.png",
+      width: 15,
+    ),
+    Image.asset(
+      "assets/images/MarkerRed.png",
+      width: 15,
+    ),
+    Image.asset(
+      "assets/images/MarkerYellow.png",
+      width: 15,
+    ),
+    Image.asset(
+      "assets/images/MarkerPink.png",
+      width: 15,
+    ),
+    Image.asset(
+      "assets/images/MarkerDeepOrange.png",
+      width: 15,
+    ),
+    Image.asset(
+      "assets/images/MarkerPurple.png",
+      width: 15,
+    ),
+    Image.asset(
+      "assets/images/MarkerTeal.png",
+      width: 15,
+    ),
+  ];
+
+  //Testando Rotas
+  List<LatLng> _routpoints = [];
+  bool _showRoutes = false;
+
   //Controller do mapa
   MapController mapController = MapController();
 
@@ -41,6 +86,9 @@ class _MapaState extends State<Mapa> {
     if (!_definedCurrentPosition) {
       _getCurrentPosition();
     }
+
+    //Carregando rotas
+    _loadRoutes();
 
     return FlutterMap(
       mapController: mapController,
@@ -162,13 +210,39 @@ class _MapaState extends State<Mapa> {
                                     ),
                                   ),
                                   child: ListTile(
+                                    leading: _lImages[_lFeatures[index]
+                                            .properties!
+                                            .gidCategoria! -
+                                        1],
                                     title: CustomWidgets.buildText(
-                                      _lFeatures[index].properties!.endereco ??
-                                          "Endereço indisponível",
-                                      CustomWidgets.textColorPrimary,
+                                      _lFeatures[index]
+                                                  .properties!
+                                                  .nmFantasia! !=
+                                              ""
+                                          ? _lFeatures[index]
+                                              .properties!
+                                              .nmFantasia!
+                                          : _lFeatures[index]
+                                              .properties!
+                                              .rzSocial!,
+                                      CustomWidgets.textColorSecondary,
                                       CustomWidgets.textMedium,
                                       "Montserrat",
                                       textAlign: TextAlign.start,
+                                      fontWeight: FontWeight.bold,
+                                      textOverflow: TextOverflow.ellipsis,
+                                    ),
+                                    subtitle: CustomWidgets.buildText(
+                                      _lFeatures[index].properties!.endereco!,
+                                      CustomWidgets.textColorTerciary,
+                                      CustomWidgets.textSmall,
+                                      "Montserrat",
+                                      textAlign: TextAlign.start,
+                                      textOverflow: TextOverflow.ellipsis,
+                                    ),
+                                    trailing: Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: CustomWidgets.textColorPrimary,
                                     ),
                                     onTap: () {},
                                   ),
@@ -183,8 +257,31 @@ class _MapaState extends State<Mapa> {
             ],
           ],
         ),
+        if (_showRoutes) ...[
+          PolylineLayer(
+            polylineCulling: false,
+            polylines: [
+              Polyline(
+                  points: _routpoints,
+                  color: Colors.red.shade800,
+                  strokeWidth: 5),
+            ],
+          )
+        ]
       ],
     );
+  }
+
+  /**
+   * Método responsável por carregar as rotas a serem mostradas no mapa
+   */
+  void _loadRoutes() async {
+    _routpoints = await RouteApi.getRoute(
+        LatLng(-5.2393246123579855, -38.13094944421087),
+        LatLng(-5.097670748466841, -38.07620782899565));
+    setState(() {
+      _showRoutes = true;
+    });
   }
 
   /**
