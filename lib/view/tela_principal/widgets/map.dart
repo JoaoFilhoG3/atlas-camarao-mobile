@@ -36,7 +36,7 @@ class _MapaState extends State<Mapa> {
   List<Feature> _lPopupFeatures = [];
 
   //Range
-  bool _showRange = false;
+  bool _updateRange = false;
   List<Feature> _lRangeFeatures = [];
 
   //Vetor de Images para o Popup
@@ -89,6 +89,19 @@ class _MapaState extends State<Mapa> {
   MapController mapController = MapController();
 
   @override
+  void didUpdateWidget(Mapa oldWidget) {
+    if (oldWidget._range != widget._range && widget._range > 0) {
+      _loadRangeMarkers();
+    }
+
+    if (widget._range <= 0) {
+      setState(() {
+        _lRangeFeatures = [];
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     //Carregando camadas
     _loadLayers();
@@ -101,11 +114,6 @@ class _MapaState extends State<Mapa> {
     //Carregando rotas
     if (_showRoutes) {
       _loadRoutes();
-    }
-
-    //Carregando Markers no caso de um filtro estabelecido
-    if (!_showRange) {
-      _loadRangeMarkers();
     }
 
     return Stack(
@@ -152,6 +160,32 @@ class _MapaState extends State<Mapa> {
                 ),
               ),
             ],
+            CircleLayer(
+              circles: [
+                CircleMarker(
+                  color: Colors.red.withOpacity(0.3),
+                  borderColor: Colors.red,
+                  borderStrokeWidth: 1,
+                  point: _currentPosition,
+                  radius: widget._range * 1000,
+                  useRadiusInMeter: true,
+                ),
+              ],
+            ),
+            MarkerLayer(
+                markers: _lRangeFeatures.map((e) {
+                  return Marker(
+                    point: LatLng(
+                      e.geometry!.coordinates![1],
+                      e.geometry!.coordinates![0],
+                    ),
+                    child: Icon(
+                      Icons.ac_unit,
+                      color: Colors.blue,
+                      size: 10,
+                    ),
+                  );
+                }).toList()),
             MarkerLayer(
               markers: [
                 //
@@ -289,34 +323,6 @@ class _MapaState extends State<Mapa> {
                 ],
               )
             ],
-            CircleLayer(
-              circles: [
-                CircleMarker(
-                  color: Colors.red.withOpacity(0.3),
-                  borderColor: Colors.red,
-                  borderStrokeWidth: 1,
-                  point: _currentPosition,
-                  radius: widget._range * 1000,
-                  useRadiusInMeter: true,
-                ),
-              ],
-            ),
-            if (_showRange) ...[
-              MarkerLayer(
-                  markers: _lRangeFeatures.map((e) {
-                return Marker(
-                  point: LatLng(
-                    e.geometry!.coordinates![1],
-                    e.geometry!.coordinates![0],
-                  ),
-                  child: Icon(
-                    Icons.ac_unit,
-                    color: Colors.blue,
-                    size: 10,
-                  ),
-                );
-              }).toList()),
-            ],
           ],
         ),
         DraggableScrollableSheet(
@@ -434,12 +440,13 @@ class _MapaState extends State<Mapa> {
   }
 
   _loadRangeMarkers() async {
-    if (widget._range > 0) {
-      setState(() async {
-        _lRangeFeatures =
-            await FeaturesApi.getFeatures(_currentPosition, range: widget._range);
-        _showRange = true;
-      });
-    }
+    List<Feature> lFeatures = await FeaturesApi.getFeatures(_currentPosition, range: widget._range);
+
+    setState(() {
+      _lRangeFeatures = lFeatures;
+      _updateRange = false;
+
+      lFeatures.forEach((element) {print("=================="+element!.type!);});
+    });
   }
 }
