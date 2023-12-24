@@ -12,12 +12,12 @@ class TelaPrincipal extends StatefulWidget {
 }
 
 class _TelaPrincipalState extends State<TelaPrincipal> {
-  double _currentLat = 0;
-  double _currentLong = 0;
+  //Filtragem por raio
+  String _layer = "";
+  double _range = 0.0;
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: _buildAppBar(),
       body: _buildBody(),
@@ -29,8 +29,8 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
    */
   AppBar _buildAppBar() {
     return AppBar(
-      title: CustomWidgets.buildText("Atlas do Camarão", Colors.white,
-          CustomWidgets.textGiant, "Montserrat"),
+      title: CustomWidgets.buildText(
+          "Atlas do Camarão", Colors.white, CustomWidgets.textGiant, "Montserrat"),
       backgroundColor: Colors.indigo,
       actions: [_buildAppBarActions()],
     );
@@ -48,7 +48,10 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
                 context: context,
                 builder: (BuildContext context) {
                   return FilterDialog();
-                }).then((value) => setState(() {}));
+                }).then((value) => setState(() {
+                  _layer = value["layer"];
+                  _range = value["range"];
+                }));
           },
           child: Icon(
             Icons.filter_list,
@@ -57,7 +60,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(left: 20,right: 20),
+          padding: const EdgeInsets.only(left: 20, right: 20),
           child: GestureDetector(
             onTap: () async {
               await showDialog(
@@ -81,6 +84,6 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
    * Método responsável por construir o corpo da tela
    */
   SafeArea _buildBody() {
-    return SafeArea(child: Mapa());
+    return SafeArea(child: new Mapa(_layer, _range));
   }
 }

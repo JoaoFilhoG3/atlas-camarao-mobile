@@ -1,9 +1,9 @@
-import 'package:atlas_do_camarao/model/geometry.dart';
+import 'package:atlas_do_camarao/model/feature_geometry.dart';
 
 class Feature {
   String? type;
   String? id;
-  Geometry? geometry;
+  FeatureGeometry? geometry;
   String? geometryName;
   Properties? properties;
   List<double>? bbox;
@@ -20,7 +20,7 @@ class Feature {
     type = json['type'];
     id = json['id'];
     geometry = json['geometry'] != null
-        ? new Geometry.fromJson(json['geometry'])
+        ? new FeatureGeometry.fromJson(json['geometry'])
         : null;
     geometryName = json['geometry_name'];
     properties = json['properties'] != null

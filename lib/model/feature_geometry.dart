@@ -1,10 +1,10 @@
-class Geometry {
+class FeatureGeometry {
   String? type;
   List<double>? coordinates;
 
-  Geometry({this.type, this.coordinates});
+  FeatureGeometry({this.type, this.coordinates});
 
-  Geometry.fromJson(Map<String, dynamic> json) {
+  FeatureGeometry.fromJson(Map<String, dynamic> json) {
     type = json['type'];
     coordinates = json['coordinates'].cast<double>();
   }
