@@ -12,10 +12,11 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
 class Mapa extends StatefulWidget {
+  late int _index;
   late String _layer;
   late double _range;
 
-  Mapa(this._layer, this._range, {super.key});
+  Mapa(this._index, this._layer, this._range, {super.key});
 
   @override
   State<Mapa> createState() => new _MapaState();
@@ -90,7 +91,7 @@ class _MapaState extends State<Mapa> {
 
   @override
   void didUpdateWidget(Mapa oldWidget) {
-    if (oldWidget._range != widget._range && widget._range > 0) {
+    if ((oldWidget._index != widget._index || oldWidget._range != widget._range) && widget._range > 0) {
       _loadRangeMarkers();
     }
 
@@ -156,7 +157,6 @@ class _MapaState extends State<Mapa> {
                   version: "1.1.1",
                   transparent: true,
                   uppercaseBoolValue: false,
-                  //otherParameters: {"cql_filter": "DWITHIN(geom,POINT(${_currentPosition.longitude} ${_currentPosition.latitude}),0.5,kilometers)"}
                 ),
               ),
             ],
@@ -174,18 +174,13 @@ class _MapaState extends State<Mapa> {
             ),
             MarkerLayer(
                 markers: _lRangeFeatures.map((e) {
-                  return Marker(
-                    point: LatLng(
-                      e.geometry!.coordinates![1],
-                      e.geometry!.coordinates![0],
-                    ),
-                    child: Icon(
-                      Icons.ac_unit,
-                      color: Colors.blue,
-                      size: 10,
-                    ),
-                  );
-                }).toList()),
+              return Marker(
+                  point: LatLng(
+                    e.geometry!.coordinates![1],
+                    e.geometry!.coordinates![0],
+                  ),
+                  child: _lImages[widget._index - 1]);
+            }).toList()),
             MarkerLayer(
               markers: [
                 //
@@ -442,11 +437,22 @@ class _MapaState extends State<Mapa> {
   _loadRangeMarkers() async {
     List<Feature> lFeatures = await FeaturesApi.getFeatures(_currentPosition, range: widget._range);
 
+    lFeatures = lFeatures.where((element) => element.properties!.gidCategoria! == widget._index).toList();
+
+    lFeatures.forEach((element) {
+      print("================== " + element!.properties!.gidCategoria!.toString());
+    });
+
     setState(() {
+      Consts.groupLayers.forEach((camada) {
+        List<Map<String, dynamic>> groupLayers = camada["layers"] as List<Map<String, dynamic>>;
+        groupLayers.forEach((layer) => layer["checked"] = false);
+      });
+
       _lRangeFeatures = lFeatures;
       _updateRange = false;
 
-      lFeatures.forEach((element) {print("=================="+element!.type!);});
+
     });
   }
 }

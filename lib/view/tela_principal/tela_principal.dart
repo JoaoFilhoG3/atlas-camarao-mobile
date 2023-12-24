@@ -13,6 +13,7 @@ class TelaPrincipal extends StatefulWidget {
 
 class _TelaPrincipalState extends State<TelaPrincipal> {
   //Filtragem por raio
+  int _index = 0;
   String _layer = "";
   double _range = 0.0;
 
@@ -47,8 +48,9 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
             await showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return FilterDialog();
+                  return FilterDialog(_index, _range);
                 }).then((value) => setState(() {
+                  _index = value["index"];
                   _layer = value["layer"];
                   _range = value["range"];
                 }));
@@ -84,6 +86,6 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
    * Método responsável por construir o corpo da tela
    */
   SafeArea _buildBody() {
-    return SafeArea(child: new Mapa(_layer, _range));
+    return SafeArea(child: new Mapa(_index, _layer, _range));
   }
 }

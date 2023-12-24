@@ -17,7 +17,6 @@ class FeaturesApi {
           "&version=1.0.0"
           "&request=GetFeature"
           "&typeName=cite%3Aservico"
-          "&maxFeatures=50"
           "&outputFormat=application%2Fjson"
           "&cql_filter=DWITHIN(geom,POINT(${latLng.longitude} ${latLng.latitude}),${range},kilometers)";
 

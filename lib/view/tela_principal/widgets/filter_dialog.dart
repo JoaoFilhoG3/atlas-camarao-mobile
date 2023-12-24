@@ -4,7 +4,10 @@ import 'package:atlas_do_camarao/util/prefs.dart';
 import 'package:flutter/material.dart';
 
 class FilterDialog extends StatefulWidget {
-  const FilterDialog({super.key});
+  int _index;
+  double _range;
+
+  FilterDialog(this._index, this._range, {super.key});
 
   @override
   State<FilterDialog> createState() => _FilterDialogState();
@@ -15,9 +18,16 @@ class _FilterDialogState extends State<FilterDialog> {
   double _sliderValue = 0;
 
   //Lista de cadeias de insumos
-  List<String> lLayers = (Consts.groupLayers![4]["layers"]! as List<Map<String, dynamic>>)
+  List<Map<String, dynamic>> lLayers =
+      Consts.groupLayers![4]["layers"]! as List<Map<String, dynamic>>;
+
+  //Lista de labels das cadeias de insumos
+  List<String> lLayerTitles = (Consts.groupLayers![4]["layers"]! as List<Map<String, dynamic>>)
       .map((e) => e["label"] as String)
       .toList();
+
+  //Indice do Dropdown
+  int _dropdownIndex = 1;
 
   //Valor do Dropdown
   late String _dropdownValue =
@@ -25,6 +35,14 @@ class _FilterDialogState extends State<FilterDialog> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget._index > 0) {
+      _dropdownIndex = widget._index;
+      _dropdownValue = (Consts.groupLayers![4]["layers"]!
+          as List<Map<String, dynamic>>)[widget._index - 1]["label"] as String;
+      _sliderValue = widget._range;
+      widget._index = 0;
+    }
+
     return Dialog(
       backgroundColor: Colors.transparent,
       child: Scaffold(
@@ -67,7 +85,7 @@ class _FilterDialogState extends State<FilterDialog> {
               underline: Container(),
               value: _dropdownValue,
               isExpanded: true,
-              items: lLayers.map((e) {
+              items: lLayerTitles.map((e) {
                 return DropdownMenuItem(
                     value: e,
                     child: CustomWidgets.buildText(
@@ -81,6 +99,7 @@ class _FilterDialogState extends State<FilterDialog> {
               onChanged: (value) {
                 if (value is String) {
                   setState(() {
+                    _dropdownIndex = lLayerTitles.indexOf(value) + 1;
                     _dropdownValue = value;
                     print(value);
                   });
@@ -146,6 +165,7 @@ class _FilterDialogState extends State<FilterDialog> {
                 Navigator.pop(
                   context,
                   {
+                    "index": _dropdownIndex,
                     "layer": _dropdownValue,
                     "range": _sliderValue,
                   },
