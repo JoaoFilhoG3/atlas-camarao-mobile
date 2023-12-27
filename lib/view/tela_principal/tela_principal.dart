@@ -1,7 +1,7 @@
 import 'package:atlas_do_camarao/util/custom_widgets.dart';
 import 'package:atlas_do_camarao/view/tela_principal/widgets/choose_layers_dialog.dart';
 import 'package:atlas_do_camarao/view/tela_principal/widgets/filter_dialog.dart';
-import 'package:atlas_do_camarao/view/tela_principal/widgets/map.dart';
+import 'package:atlas_do_camarao/view/tela_principal/widgets/mapa/map.dart';
 import 'package:flutter/material.dart';
 
 class TelaPrincipal extends StatefulWidget {

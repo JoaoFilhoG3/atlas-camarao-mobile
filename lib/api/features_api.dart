@@ -5,7 +5,7 @@ import "package:http/http.dart" as http;
 import "package:latlong2/latlong.dart";
 
 class FeaturesApi {
-  static Future<List<Feature>> getFeatures(LatLng latLng, {range = 1}) async {
+  static Future<List<Feature>> getFeatures(LatLng latLng, {range = 3}) async {
 
     //Range recebido em quilômetros e convertido
     range = range / 100;

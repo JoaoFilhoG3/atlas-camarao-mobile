@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Consts {
   static List<Map<String, Object>> groupLayers = [
     {
@@ -224,5 +226,45 @@ class Consts {
         },
       ],
     },
+  ];
+
+  //Vetor de Images para o Popup
+  static List<Widget> lImages = [
+    Image.asset(
+      "assets/images/MarkerBlue.png",
+      width: 15,
+    ),
+    Image.asset(
+      "assets/images/MarkerBrown.png",
+      width: 15,
+    ),
+    Image.asset(
+      "assets/images/MarkerCyan.png",
+      width: 15,
+    ),
+    Image.asset(
+      "assets/images/MarkerRed.png",
+      width: 15,
+    ),
+    Image.asset(
+      "assets/images/MarkerYellow.png",
+      width: 15,
+    ),
+    Image.asset(
+      "assets/images/MarkerPink.png",
+      width: 15,
+    ),
+    Image.asset(
+      "assets/images/MarkerDeepOrange.png",
+      width: 15,
+    ),
+    Image.asset(
+      "assets/images/MarkerPurple.png",
+      width: 15,
+    ),
+    Image.asset(
+      "assets/images/MarkerTeal.png",
+      width: 15,
+    ),
   ];
 }
