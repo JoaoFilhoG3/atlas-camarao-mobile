@@ -22,14 +22,25 @@ class Mapa extends StatefulWidget {
   late String _layer;
   late double _range;
   StreamController<List<Feature>> sclTravels = StreamController<List<Feature>>.broadcast();
+  StreamController<LatLng?> scPopupPosition = StreamController<LatLng?>.broadcast();
 
   Mapa(this._categoryIndex, this._layer, this._range, {super.key});
 
   @override
   State<Mapa> createState() => new _MapaState();
 
-  loadStream(List<Feature> lFeatures) {
+  loadLTravelsStream(List<Feature> lFeatures) {
     sclTravels.add(lFeatures);
+  }
+
+  loadPopupPositionStream(LatLng? popupPosition) {
+    scPopupPosition.add(popupPosition);
+  }
+
+  double get range => _range;
+
+  set range(double value) {
+    _range = value;
   }
 }
 
@@ -41,8 +52,7 @@ class _MapaState extends State<Mapa> {
   //Marker de posição atua
   Future<LatLng?>? _currentPosition;
 
-  //Posição do Popup
-  LatLng? _popupPosition = null;
+  //Features a serem apresentadas no Popup
   List<Feature> _lPopupFeatures = [];
 
   //Range
@@ -74,7 +84,7 @@ class _MapaState extends State<Mapa> {
             onTap: (tapPosition, point) {
               FeaturesApi.getFeatures(point).then((lFeatures) {
                 setState(() {
-                  _popupPosition = point;
+                  widget.loadPopupPositionStream(point);
                   _lPopupFeatures = lFeatures;
                 });
               });
@@ -118,17 +128,6 @@ class _MapaState extends State<Mapa> {
                 }
               },
             ),
-            //MarkerLayerRangePoints
-            FutureBuilder(
-              future: _currentPosition,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return MarkerLayerRangePoints(widget, snapshot.data, _lRangeFeatures, widget._categoryIndex, widget._range);
-                } else {
-                  return MarkerLayer(markers: []);
-                }
-              },
-            ),
             //PolylineLayerRoutes
             FutureBuilder(
               future: _currentPosition,
@@ -138,7 +137,7 @@ class _MapaState extends State<Mapa> {
                     initialData: [],
                     stream: widget.sclTravels.stream,
                     builder: (streamContext, streamSnapshot) {
-                      if (streamSnapshot.hasData || streamSnapshot.data == null) {
+                      if (streamSnapshot.hasData) {
                         return PolylineLayerRoutes(futureSnapshot.data, streamSnapshot.requireData);
                       } else {
                         return MarkerLayer(markers: []);
@@ -147,6 +146,17 @@ class _MapaState extends State<Mapa> {
                   );
                 } else {
                   return PolylineLayer(polylines: []);
+                }
+              },
+            ),
+            //MarkerLayerRangePoints
+            FutureBuilder(
+              future: _currentPosition,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return MarkerLayerRangePoints(widget, snapshot.data, _lRangeFeatures, widget._categoryIndex, widget._range);
+                } else {
+                  return MarkerLayer(markers: []);
                 }
               },
             ),
@@ -164,9 +174,18 @@ class _MapaState extends State<Mapa> {
             //MarkerLayerPopup
             FutureBuilder(
               future: _currentPosition,
-              builder: (context, snapshot) {
-                if (snapshot.hasData || snapshot.data == null) {
-                  return MarkerLayerPopup(widget, snapshot.data, _popupPosition, _lPopupFeatures);
+              builder: (futureContext, futureSnapshot) {
+                if (futureSnapshot.hasData || futureSnapshot.data == null) {
+                  return StreamBuilder<LatLng?>(
+                    stream: widget.scPopupPosition.stream,
+                    builder: (streamContext, streamSnapshot) {
+                      if (streamSnapshot.hasData || streamSnapshot.data == null) {
+                        return MarkerLayerPopup(widget, futureSnapshot.data, streamSnapshot.data, _lPopupFeatures);
+                      } else {
+                        return MarkerLayer(markers: []);
+                      }
+                    },
+                  );
                 } else {
                   return MarkerLayer(markers: []);
                 }

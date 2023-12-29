@@ -17,6 +17,7 @@ class PolylineLayerRoutes extends StatefulWidget {
 
 class _PolylineLayerRoutesState extends State<PolylineLayerRoutes> {
   List<Travel> lTravels = [];
+  int selectedTravelIndex = 0;
 
   @override
   void initState() {
@@ -26,17 +27,27 @@ class _PolylineLayerRoutesState extends State<PolylineLayerRoutes> {
   }
 
   @override
+  void didUpdateWidget(PolylineLayerRoutes oldWidget) {
+    if (widget._currentPosition != null && oldWidget._lFeatures != widget._lFeatures) {
+      _getRoutes();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (widget._currentPosition != null && lTravels.isNotEmpty) {
+      Travel travel = lTravels[selectedTravelIndex];
+
       return PolylineLayer(
         polylineCulling: false,
-        polylines: lTravels.map((travel) {
-          return Polyline(
+        polylines: [
+          Polyline(
+            isDotted: true,
             points: travel.routes != null ? travel.routes![0].geometry!.coordinates!.map((e) => LatLng(e.lat!, e.long!)).toList() : [],
             color: Colors.red.shade800,
             strokeWidth: 5,
-          );
-        }).toList(),
+          ),
+        ],
       );
     } else {
       return PolylineLayer(polylines: []);
@@ -55,6 +66,26 @@ class _PolylineLayerRoutesState extends State<PolylineLayerRoutes> {
 
     setState(() {
       lTravels = lTravelsAux;
+    });
+
+    _loadShortestRoute(lTravels);
+  }
+
+  _loadShortestRoute(List<Travel> lTravels) async {
+    //Criando a variável de menor rota e definindo inicialmente para a primeira feature
+    Travel shortestRoute = lTravels[0];
+    int shortestRouteIndex = 0;
+
+    for (int i = 1; i < lTravels.length; i++) {
+      Travel newTravel = lTravels[i];
+
+      if (newTravel.routes![0].distance! < shortestRoute.routes![0].distance!) {
+        shortestRoute = newTravel;
+        shortestRouteIndex = i;
+      }
+    }
+    setState(() {
+      selectedTravelIndex = shortestRouteIndex;
     });
   }
 }

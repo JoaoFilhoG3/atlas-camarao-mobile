@@ -70,7 +70,7 @@ class _MarkerLayerPopupState extends State<MarkerLayerPopup> {
                             IconButton(
                                 onPressed: () {
                                   setState(() {
-                                    widget._popupPosition = null;
+                                    widget._mapa.loadPopupPositionStream(null);
                                   });
                                 },
                                 icon: Icon(
@@ -154,8 +154,8 @@ class _MarkerLayerPopupState extends State<MarkerLayerPopup> {
     List<Travel> lTravelAux = [];
     if (widget._currentPosition != null) {
       Feature feature = result as Feature;
-      widget._mapa.loadStream([feature]);
-      widget._popupPosition = null;
+      widget._mapa.loadLTravelsStream([feature]);
+      widget._mapa.loadPopupPositionStream(null);
       widget._lPopupFeatures = [];
     }
   }
