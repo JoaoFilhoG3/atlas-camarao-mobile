@@ -16,10 +16,13 @@ class DraggableBottomSheet extends StatefulWidget {
 }
 
 class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
+  DraggableScrollableController dscController = DraggableScrollableController();
+
   @override
   Widget build(BuildContext context) {
     if (widget._lFeatures.length > 0) {
       return DraggableScrollableSheet(
+        controller: dscController,
         expand: true,
         initialChildSize: 0.1,
         minChildSize: 0.1,
@@ -38,8 +41,7 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
             ),
             child: SingleChildScrollView(
               controller: scrollController,
-              child:
-              Column(
+              child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Container(
@@ -68,9 +70,7 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                         return ListTile(
                           leading: Consts.lImages[widget._lFeatures[index].properties!.gidCategoria! - 1],
                           title: CustomWidgets.buildText(
-                            widget._lFeatures[index].properties!.nmFantasia! != ""
-                                ? widget._lFeatures[index].properties!.nmFantasia!
-                                : widget._lFeatures[index].properties!.rzSocial!,
+                            widget._lFeatures[index].properties!.nmFantasia! != "" ? widget._lFeatures[index].properties!.nmFantasia! : widget._lFeatures[index].properties!.rzSocial!,
                             CustomWidgets.textColorSecondary,
                             CustomWidgets.textMedium,
                             "Montserrat",
@@ -91,7 +91,10 @@ class _DraggableBottomSheetState extends State<DraggableBottomSheet> {
                             color: CustomWidgets.textColorPrimary,
                           ),
                           onTap: () {
-
+                            widget._mapa.loadSelectedTravelStream(widget._lFeatures.indexOf(feature));
+                            setState(() {
+                              dscController.animateTo(0.1,duration: Duration(seconds: 1), curve: Curves.ease);
+                            });
                           },
                         );
                       },

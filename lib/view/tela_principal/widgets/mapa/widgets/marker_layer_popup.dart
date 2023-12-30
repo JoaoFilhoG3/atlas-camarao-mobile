@@ -33,14 +33,67 @@ class _MarkerLayerPopupState extends State<MarkerLayerPopup> {
         markers: [
           if (widget._lPopupFeatures.isEmpty) ...[
             Marker(
+              height: 300,
+              width: 350,
               point: LatLng(
                 widget._popupPosition!.latitude + 0.01,
                 widget._popupPosition!.longitude,
               ),
               child: Container(
-                padding: EdgeInsets.all(5),
+                alignment: Alignment.center,
                 color: Colors.white,
-                child: CustomWidgets.buildText("Não foi possível encontrar pontos próximos.", CustomWidgets.textColorPrimary, CustomWidgets.textBig, "Montserrat"),
+                child: Column(
+                  children: [
+                    Container(
+                      color: Colors.blue,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: CustomWidgets.buildText(
+                              "Pontos Próximos",
+                              Colors.white,
+                              CustomWidgets.textGiant,
+                              "Montserrat",
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                widget._mapa.loadPopupPositionStream(null);
+                              });
+                            },
+                            icon: Icon(
+                              Icons.close,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.location_off_rounded,
+                            size: 50,
+                            color: Colors.grey,
+                          ),
+                          Flexible(
+                            child: CustomWidgets.buildText(
+                              "Não foi possível encontrar pontos próximos.",
+                              CustomWidgets.textColorSecondary,
+                              CustomWidgets.textBig,
+                              "Montserrat",
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ] else ...[

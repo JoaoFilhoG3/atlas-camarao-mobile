@@ -22,6 +22,7 @@ class Mapa extends StatefulWidget {
   late String _layer;
   late double _range;
   StreamController<List<Feature>> sclTravels = StreamController<List<Feature>>.broadcast();
+  StreamController<int> scSelectedTravel = StreamController<int>.broadcast();
   StreamController<LatLng?> scPopupPosition = StreamController<LatLng?>.broadcast();
 
   Mapa(this._categoryIndex, this._layer, this._range, {super.key});
@@ -31,6 +32,10 @@ class Mapa extends StatefulWidget {
 
   loadLTravelsStream(List<Feature> lFeatures) {
     sclTravels.add(lFeatures);
+  }
+
+  loadSelectedTravelStream(int selectedTravel) {
+    scSelectedTravel.add(selectedTravel);
   }
 
   loadPopupPositionStream(LatLng? popupPosition) {
@@ -136,9 +141,19 @@ class _MapaState extends State<Mapa> {
                   return StreamBuilder<List<Feature>>(
                     initialData: [],
                     stream: widget.sclTravels.stream,
-                    builder: (streamContext, streamSnapshot) {
-                      if (streamSnapshot.hasData) {
-                        return PolylineLayerRoutes(futureSnapshot.data, streamSnapshot.requireData);
+                    builder: (streamListTravelsContext, streamListTravelsSnapshot) {
+                      if (streamListTravelsSnapshot.hasData) {
+                        return StreamBuilder(
+                          initialData: 0,
+                          stream: widget.scSelectedTravel.stream,
+                          builder: (streamSelectedTravelContext, streamSelectedTravelSnapshot) {
+                            if (streamListTravelsSnapshot.hasData) {
+                              return PolylineLayerRoutes(widget, futureSnapshot.data, streamListTravelsSnapshot.requireData, streamSelectedTravelSnapshot.requireData);
+                            } else {
+                              return MarkerLayer(markers: []);
+                            }
+                          },
+                        );
                       } else {
                         return MarkerLayer(markers: []);
                       }
@@ -149,23 +164,23 @@ class _MapaState extends State<Mapa> {
                 }
               },
             ),
-            //MarkerLayerRangePoints
-            FutureBuilder(
-              future: _currentPosition,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return MarkerLayerRangePoints(widget, snapshot.data, _lRangeFeatures, widget._categoryIndex, widget._range);
-                } else {
-                  return MarkerLayer(markers: []);
-                }
-              },
-            ),
             //MarkerLayerCurrentPosition
             FutureBuilder(
               future: _currentPosition,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return MarkerLayerCurrentPosition(snapshot.data, _mapController);
+                } else {
+                  return MarkerLayer(markers: []);
+                }
+              },
+            ),
+            //MarkerLayerRangePoints
+            FutureBuilder(
+              future: _currentPosition,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return MarkerLayerRangePoints(widget, snapshot.data, _lRangeFeatures, widget._categoryIndex, widget._range);
                 } else {
                   return MarkerLayer(markers: []);
                 }

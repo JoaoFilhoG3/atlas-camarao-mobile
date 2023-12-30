@@ -67,7 +67,7 @@ class _MarkerLayerRangePointsState extends State<MarkerLayerRangePoints> {
                             ),
                             padding: EdgeInsets.only(top: 2, left: 5, bottom: 2, right: 5),
                             child: CustomWidgets.buildText(
-                                (snapshot.data![widget._lRangeFeatures.indexOf(e)] / 1000).toStringAsFixed(2) + "Km",
+                              (snapshot.data![widget._lRangeFeatures.indexOf(e)] / 1000).toStringAsFixed(2) + "Km",
                               CustomWidgets.textColorPrimary,
                               CustomWidgets.textBigger,
                               "Montserrat",
@@ -81,8 +81,39 @@ class _MarkerLayerRangePointsState extends State<MarkerLayerRangePoints> {
             }
           }
 
-          if(snapshot.connectionState == ConnectionState.waiting){
-            return Center(child: CircularProgressIndicator());
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return GestureDetector(
+              onTap: (){
+                //Só pra não deixar clicar no mapa
+              },
+              child: Container(
+                color: Colors.black.withOpacity(0.6),
+                width: MediaQuery.sizeOf(context).width,
+                height: MediaQuery.sizeOf(context).height,
+                child: Center(
+                  child: Container(
+                    width: 200,
+                    height: 130,
+                    padding: EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(5))
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(height: 5,),
+                        Flexible(
+                            child:
+                            CustomWidgets.buildText("Carregando informações.", CustomWidgets.textColorSecondary, CustomWidgets.textBig, "Montserrat", fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
           }
           return MarkerLayer(markers: []);
         },

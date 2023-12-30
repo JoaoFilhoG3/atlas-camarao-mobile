@@ -1,15 +1,18 @@
 import 'package:atlas_do_camarao/api/route_api.dart';
 import 'package:atlas_do_camarao/model/feature.dart';
 import 'package:atlas_do_camarao/model/route_api_model/travel.dart';
+import 'package:atlas_do_camarao/view/tela_principal/widgets/mapa/map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 class PolylineLayerRoutes extends StatefulWidget {
+  Mapa _mapa;
   LatLng? _currentPosition;
   List<Feature> _lFeatures = [];
+  int _selectedTravelIndex = 0;
 
-  PolylineLayerRoutes(this._currentPosition, this._lFeatures, {super.key});
+  PolylineLayerRoutes(this._mapa, this._currentPosition, this._lFeatures, this._selectedTravelIndex, {super.key});
 
   @override
   State<PolylineLayerRoutes> createState() => _PolylineLayerRoutesState();
@@ -17,7 +20,6 @@ class PolylineLayerRoutes extends StatefulWidget {
 
 class _PolylineLayerRoutesState extends State<PolylineLayerRoutes> {
   List<Travel> lTravels = [];
-  int selectedTravelIndex = 0;
 
   @override
   void initState() {
@@ -36,7 +38,7 @@ class _PolylineLayerRoutesState extends State<PolylineLayerRoutes> {
   @override
   Widget build(BuildContext context) {
     if (widget._currentPosition != null && lTravels.isNotEmpty) {
-      Travel travel = lTravels[selectedTravelIndex];
+      Travel travel = lTravels[widget._selectedTravelIndex];
 
       return PolylineLayer(
         polylineCulling: false,
@@ -84,8 +86,6 @@ class _PolylineLayerRoutesState extends State<PolylineLayerRoutes> {
         shortestRouteIndex = i;
       }
     }
-    setState(() {
-      selectedTravelIndex = shortestRouteIndex;
-    });
+    widget._mapa.loadSelectedTravelStream(shortestRouteIndex);
   }
 }

@@ -33,7 +33,7 @@ class _MarkerLayerCurrentPositionState extends State<MarkerLayerCurrentPosition>
         Marker(
           point: widget._currentPosition!,
           child: Icon(
-            Icons.person_pin_circle_sharp,
+            Icons.location_history_rounded,
             color: Colors.blue,
             size: 40,
           ),
