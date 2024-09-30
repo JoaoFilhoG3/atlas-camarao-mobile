@@ -1,6 +1,5 @@
 import 'package:atlas_do_camarao/util/custom_widgets.dart';
 import 'package:atlas_do_camarao/util/consts.dart';
-import 'package:atlas_do_camarao/util/prefs.dart';
 import 'package:flutter/material.dart';
 
 class FilterDialog extends StatefulWidget {

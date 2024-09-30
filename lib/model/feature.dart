@@ -6,7 +6,7 @@ class Feature {
   FeatureGeometry? geometry;
   String? geometryName;
   Properties? properties;
-  List<double>? bbox;
+  // List<double>? bbox;
 
   Feature(
       {this.type,
@@ -14,7 +14,8 @@ class Feature {
         this.geometry,
         this.geometryName,
         this.properties,
-        this.bbox});
+        // this.bbox
+      });
 
   Feature.fromJson(Map<String, dynamic> json) {
     type = json['type'];
@@ -26,7 +27,7 @@ class Feature {
     properties = json['properties'] != null
         ? new Properties.fromJson(json['properties'])
         : null;
-    bbox = json['bbox'].cast<double>();
+    // bbox = json['bbox'].cast<double>();
   }
 
   Map<String, dynamic> toJson() {
@@ -40,7 +41,7 @@ class Feature {
     if (this.properties != null) {
       data['properties'] = this.properties!.toJson();
     }
-    data['bbox'] = this.bbox;
+    // data['bbox'] = this.bbox;
     return data;
   }
 }

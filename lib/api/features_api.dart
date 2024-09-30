@@ -1,6 +1,7 @@
 import "dart:convert";
 
 import "package:atlas_do_camarao/model/feature.dart";
+import "package:atlas_do_camarao/util/prefs.dart";
 import "package:http/http.dart" as http;
 import "package:latlong2/latlong.dart";
 
@@ -12,7 +13,9 @@ class FeaturesApi {
     List<Feature> lFeatures = [];
 
     try {
-      var url = "http://192.168.0.17:8080/geoserver/cite/ows"
+      var host = await Prefs.getString("HOST");
+      var port = await Prefs.getString("PORT");
+      var url = "http://$host:$port/geoserver/cite/ows"
           "?service=WFS"
           "&version=1.0.0"
           "&request=GetFeature"

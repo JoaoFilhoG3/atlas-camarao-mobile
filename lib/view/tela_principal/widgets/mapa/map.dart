@@ -21,11 +21,13 @@ class Mapa extends StatefulWidget {
   late int _categoryIndex;
   late String _layer;
   late double _range;
+  late String _host;
+  late String _port;
   StreamController<List<Feature>> sclTravels = StreamController<List<Feature>>.broadcast();
   StreamController<int> scSelectedTravel = StreamController<int>.broadcast();
   StreamController<LatLng?> scPopupPosition = StreamController<LatLng?>.broadcast();
 
-  Mapa(this._categoryIndex, this._layer, this._range, {super.key});
+  Mapa(this._categoryIndex, this._layer, this._range, this._host, this._port, {super.key});
 
   @override
   State<Mapa> createState() => new _MapaState();
@@ -112,7 +114,7 @@ class _MapaState extends State<Mapa> {
                   LatLng(90, 180),
                 ),
                 wmsOptions: WMSTileLayerOptions(
-                  baseUrl: "http://192.168.0.17:8080/geoserver/cite/wms/?",
+                  baseUrl: "http://${widget._host}:${widget._port}/geoserver/cite/wms/?",
                   layers: _lLayers,
                   styles: _lStyles,
                   format: "image/png",
